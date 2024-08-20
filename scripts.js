@@ -4,9 +4,12 @@ console.log('Client ID:', clientId);
 
 // Determine the brand based on the client ID
 const brandMap = {
-    '0oafh5hg3uSvAvdNe1d7': 'brand1',
-    '0oafhudaagbBfs8cd1d7': 'brand2'
+    '0oafh5hg3uSvAvdNe1d7': 'ford',
+    '0oafhudaagbBfs8cd1d7': 'lincoln',
 };
+
+// brand1_kobinaaggrey2@gmail.com
+// brand2_kobinaagrey@gmail.com
 const brandIdentifier = brandMap[clientId] || 'default';
 
 console.log('Client ID:', clientId);
@@ -34,7 +37,7 @@ const config = {
     },
     transformUsername: (username, operation) => {
         // Append the brand identifier to the username
-        const modifiedUsername = `${brandIdentifier}_${username}`;
+        const modifiedUsername = `${username}+${brandIdentifier}`;
         console.log('Transforming username:', modifiedUsername);
         return modifiedUsername;
     }
