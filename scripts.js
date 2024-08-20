@@ -1,43 +1,40 @@
-// Get the client ID to determine the brand
 const clientId = new URLSearchParams(window.location.search).get('client_id');
 console.log('Client ID:', clientId);
 
-// Determine the brand based on the client ID
 const brandMap = {
     '0oafh5hg3uSvAvdNe1d7': 'ford',
     '0oafhudaagbBfs8cd1d7': 'lincoln',
 };
 
-// brand1_kobinaaggrey2@gmail.com
-// brand2_kobinaagrey@gmail.com
 const brandIdentifier = brandMap[clientId] || 'default';
 
-console.log('Client ID:', clientId);
 console.log('Brand:', brandIdentifier);
+
 const config = {
-    baseUrl: 'https://dev-duuo.oktapreview.com',  // Corrected Okta domain
+    baseUrl: 'https://dev-duuo.oktapreview.com',
     clientId: clientId,
-    redirectUri: 'https://papakobina.github.io/testingsub/success.html',  // Local testing redirect URI
+    redirectUri: 'https://papakobina.github.io/testingsub/success.html',
     authParams: {
-        issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',  // Corrected issuer
+        issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
         responseType: ['id_token', 'token'],
         display: 'page'
     },
     features: {
-        registration: true  // Allows testing of sign-up functionality if needed
+        registration: true
     },
     i18n: {
         en: {
             'primaryauth.title': `Sign in to ${brandIdentifier.toUpperCase()}`
         }
     },
-    logo: 'https://via.placeholder.com/150',  // Placeholder logo for testing
+    logo: 'https://via.placeholder.com/150',
     colors: {
-        brand: '#000000'  // Simple black color for testing
+        brand: '#000000'
     },
     transformUsername: (username, operation) => {
-        // Append the brand identifier to the username
-        const modifiedUsername = `${username}+${brandIdentifier}`;
+        // Extract the email parts before adding the brand identifier
+        const [localPart, domain] = username.split('@');
+        const modifiedUsername = `${localPart}+${brandIdentifier}@${domain}`;
         console.log('Transforming username:', modifiedUsername);
         return modifiedUsername;
     }
