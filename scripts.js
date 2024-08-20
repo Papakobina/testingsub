@@ -45,11 +45,8 @@ const signIn = new OktaSignIn(config);
 signIn.renderEl(
     { el: '#okta-login-container' },
     function (res) {
-        if (res.status === 'SUCCESS') {
-            console.log('Login successful:', res);
-        } else {
-            console.warn('Unexpected status:', res.status);
-        }
+        console.log('Login successful:', res);
+        window.location.href = 'https://www.ford.com/';
     },
     function (err) {
         console.error('Login error:', err);
