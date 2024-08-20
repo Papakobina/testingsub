@@ -1,44 +1,40 @@
+// Get the client ID to determine the brand
 const clientId = new URLSearchParams(window.location.search).get('client_id');
 console.log('Client ID:', clientId);
 
+// Determine the brand based on the client ID
 const brandMap = {
-    '0oafh5hg3uSvAvdNe1d7': 'ford',
-    '0oafhudaagbBfs8cd1d7': 'lincoln',
+    '0oafh5hg3uSvAvdNe1d7': 'brand1',
+    '0oafhudaagbBfs8cd1d7': 'brand2'
 };
-
 const brandIdentifier = brandMap[clientId] || 'default';
 
+console.log('Client ID:', clientId);
 console.log('Brand:', brandIdentifier);
-
 const config = {
-    baseUrl: 'https://dev-duuo.oktapreview.com',
+    baseUrl: 'https://dev-duuo.oktapreview.com',  // Corrected Okta domain
     clientId: clientId,
-    redirectUri: 'https://papakobina.github.io/testingsub/success.html',
+    redirectUri: 'https://papakobina.github.io/testingsub/success.html',  // Local testing redirect URI
     authParams: {
-        issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
+        issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',  // Corrected issuer
         responseType: ['id_token', 'token'],
         display: 'page'
     },
     features: {
-        registration: true
+        registration: true  // Allows testing of sign-up functionality if needed
     },
     i18n: {
         en: {
             'primaryauth.title': `Sign in to ${brandIdentifier.toUpperCase()}`
         }
     },
-    logo: 'https://via.placeholder.com/150',
+    logo: 'https://via.placeholder.com/150',  // Placeholder logo for testing
     colors: {
-        brand: '#000000'
+        brand: '#000000'  // Simple black color for testing
     },
     transformUsername: (username, operation) => {
-        // Extract the email parts before adding the brand identifier
-        const [localPart, domain] = username.split('@');
-        const modifiedUsername = `${localPart}@${domain}`;
-        // const modifiedUsername = `${localPart}+${brandIdentifier}@${domain}`;
-        console.log('localPart:', localPart);
-        console.log('brandIdentifier:', brandIdentifier);
-        console.log('domain:', domain);
+        // Append the brand identifier to the username
+        const modifiedUsername = `${brandIdentifier}_${username}`;
         console.log('Transforming username:', modifiedUsername);
         return modifiedUsername;
     }
