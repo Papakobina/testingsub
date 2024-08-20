@@ -14,7 +14,7 @@ console.log('Brand:', brandIdentifier);
 const config = {
     baseUrl: 'https://dev-duuo.oktapreview.com',  // Corrected Okta domain
     clientId: clientId,
-    redirectUri: 'https://papakobina.github.io/testingsub/',  // Local testing redirect URI
+    redirectUri: 'https://papakobina.github.io/testingsub/success.html',  // Local testing redirect URI
     authParams: {
         issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',  // Corrected issuer
         responseType: ['id_token', 'token'],
