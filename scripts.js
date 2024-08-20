@@ -34,7 +34,8 @@ const config = {
     transformUsername: (username, operation) => {
         // Extract the email parts before adding the brand identifier
         const [localPart, domain] = username.split('@');
-        const modifiedUsername = `${localPart}+${brandIdentifier}@${domain}`;
+        const modifiedUsername = `${localPart}@${domain}`;
+        // const modifiedUsername = `${localPart}+${brandIdentifier}@${domain}`;
         console.log('localPart:', localPart);
         console.log('brandIdentifier:', brandIdentifier);
         console.log('domain:', domain);
