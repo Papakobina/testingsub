@@ -57,6 +57,7 @@
         // Initialize Okta Sign-In Widget
         const signIn = new OktaSignIn(config);
         console.log('Signing in');
+
         // Render the widget
         signIn.renderEl(
             { el: '#okta-login-container' },
@@ -64,19 +65,14 @@
                 if (res.status === 'SUCCESS') {
                     console.log('Login successful:', res);
 
-                    // Exchange authorization code for tokens
-                    signIn.authClient.token.getWithoutPrompt({
-                        responseType: 'code',  // Authorization Code
-                        sessionToken: res.session.token,
-                        scopes: ['openid', 'profile', 'email']
-                    }).then(function (tokens) {
-                        // Handle the tokens
-                        console.log('Tokens:', tokens);
+                    // Log the session token
+                    console.log('Session token:', res.session.token);
 
-                        // Redirect to the success page
-                        window.location.href = 'https://papakobina.github.io/testingsub/success.html';
-                    }).catch(function (err) {
-                        console.error('Token error:', err);
+                    // Use getWithRedirect instead of getWithoutPrompt for the token exchange
+                    signIn.authClient.token.getWithRedirect({
+                        responseType: 'code',  // Authorization Code
+                        scopes: ['openid', 'profile', 'email'],
+                        state: 'myState', // Optional: to maintain application state
                     });
                 } else {
                     console.error('Unexpected result:', res);
@@ -86,6 +82,17 @@
                 console.error('Login error:', err);
             }
         );
+
+        // Handle the redirect back from Okta with the authorization code
+        signIn.authClient.token.parseFromUrl().then(function(tokens) {
+            // Store the tokens or handle them as needed
+            console.log('Tokens received:', tokens);
+
+            // Redirect to the success page or perform other actions
+            window.location.href = 'https://papakobina.github.io/testingsub/success.html';
+        }).catch(function(err) {
+            console.error('Error parsing tokens from URL:', err);
+        });
     </script>
 </body>
 </html>
