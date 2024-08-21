@@ -26,7 +26,7 @@
         const config = {
             baseUrl: 'https://dev-duuo.oktapreview.com',  // Your Okta base URL
             clientId: clientId,  // The client ID from the URL
-            redirectUri: 'https://www.ford.com/',  // Your redirect URI
+            redirectUri: 'https://papakobina.github.io/testingsub/succes.html',  // Correct redirect URI to your success page
             authParams: {
                 issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
                 responseType: ['code'],  // Request authorization code
@@ -58,41 +58,26 @@
         const signIn = new OktaSignIn(config);
         console.log('Initializing sign-in process');
 
-        // Check if we're handling a redirect from Okta
-        signIn.authClient.token.parseFromUrl().then(function(tokens) {
-            // Handle the tokens after successful redirection
-            console.log('Tokens received:', tokens);
+        // Render the sign-in widget
+        signIn.renderEl(
+            { el: '#okta-login-container' },
+            function (res) {
+                if (res.status === 'SUCCESS') {
+                    console.log('Login successful:', res);
 
-            // Redirect to the success page or perform other actions
-            window.location.href = 'https://papakobina.github.io/testingsub/success.html';
-        }).catch(function(err) {
-            console.log('Not handling a redirect; proceeding with sign-in widget rendering');
-            console.error('Error parsing tokens from URL (if any):', err);
-
-            // Render the sign-in widget
-            signIn.renderEl(
-                { el: '#okta-login-container' },
-                function (res) {
-                    if (res.status === 'SUCCESS') {
-                        console.log('Login successful:', res);
-
-                        // Log the session token
-                        console.log('Session token:', res.session.token);
-
-                        // Redirect to Okta for authorization code using getWithRedirect
-                        signIn.authClient.token.getWithRedirect({
-                            responseType: 'code',  // Authorization Code
-                            scopes: ['openid', 'profile', 'email']
-                        });
-                    } else {
-                        console.error('Unexpected result:', res);
-                    }
-                },
-                function (err) {
-                    console.error('Login error:', err);
+                    // Redirect to Okta for authorization code using getWithRedirect
+                    signIn.authClient.token.getWithRedirect({
+                        responseType: 'code',  // Authorization Code
+                        scopes: ['openid', 'profile', 'email']
+                    });
+                } else {
+                    console.error('Unexpected result:', res);
                 }
-            );
-        });
+            },
+            function (err) {
+                console.error('Login error:', err);
+            }
+        );
     </script>
 </body>
 </html>

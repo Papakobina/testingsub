@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign-In Success</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #4CAF50;
-        }
-        p {
-            font-size: 18px;
-        }
-    </style>
+    <title>Okta Success</title>
+    <script src="https://global.oktacdn.com/okta-signin-widget/5.5.1/js/okta-sign-in.min.js"></script>
 </head>
 <body>
-    <h1>Sign-In Successful</h1>
-    <p>You have successfully signed into <strong>BrandX</strong>.</p>
-    <p>Thank you for signing in!</p>
+    <script>
+        // Initialize Okta Auth SDK
+        const authClient = new OktaAuth({
+            issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
+            clientId: '0oagpx3dhqpSBY8qO1d7',
+            redirectUri: 'https://papakobina.github.io/testingsub/succes.html'
+        });
+
+        // Handle the redirect and parse tokens
+        authClient.token.parseFromUrl().then(function(tokens) {
+            // Store or handle tokens as needed
+            console.log('Tokens received:', tokens);
+
+            // Redirect to the final destination (Ford website)
+            window.location.href = 'https://www.ford.com/';
+        }).catch(function(err) {
+            console.error('Error parsing tokens from URL:', err);
+        });
+    </script>
 </body>
 </html>
