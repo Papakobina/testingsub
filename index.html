@@ -3,12 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brand Login</title>
-    <link rel="stylesheet" href="https://global.oktacdn.com/okta-signin-widget/5.5.1/css/okta-sign-in.min.css">
+    <title>Okta PKCE Example</title>
+    <script src="https://global.oktacdn.com/okta-signin-widget/5.5.1/js/okta-sign-in.min.js"></script>
+    <link href="https://global.oktacdn.com/okta-signin-widget/5.5.1/css/okta-sign-in.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="okta-login-container"></div>
-    <script src="https://global.oktacdn.com/okta-signin-widget/5.5.1/js/okta-sign-in.min.js"></script>
-    <script src="scripts.js"></script>
+    <script>
+        // Your Okta configuration
+        const config = {
+            baseUrl: 'https://dev-duuo.oktapreview.com',  // Your Okta base URL
+            clientId: '0oafh5hg3uSvAvdNe1d7',  // Your Client ID
+            redirectUri: 'https://papakobina.github.io/testingsub/success.html',  // Your redirect URI
+            authParams: {
+                issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
+                responseType: ['code'],  // Request authorization code
+                display: 'page',
+                scopes: ['openid', 'profile', 'email'],  // Scopes requested
+                pkce: true  // Enable PKCE
+            },
+            features: {
+                registration: true  // Allow user registration (if applicable)
+            },
+            i18n: {
+                en: {
+                    'primaryauth.title': 'Sign in to My App'
+                }
+            },
+            logo: 'https://via.placeholder.com/150',  // Placeholder logo
+            colors: {
+                brand: '#000000'  // Brand color
+            },
+            transformUsername: (username, operation) => {
+                // Optionally modify the username before sending
+                return username;
+            }
+        };
+
+        // Initialize Okta Sign-In Widget
+        const signIn = new OktaSignIn(config);
+
+        // Render the widget
+        signIn.renderEl(
+            { el: '#okta-login-container' },
+            function (res) {
+                if (res.status === 'SUCCESS') {
+                    console.log('Login successful:', res);
+
+                    // Exchange authorization code for tokens
+                    signIn.authClient.token.getWithoutPrompt({
+                        responseType: 'code',  // Authorization Code
+                        sessionToken: res.session.token,
+                        scopes: ['openid', 'profile', 'email']
+                    }).then(function (tokens) {
+                        // Handle the tokens
+                        console.log('Tokens:', tokens);
+
+                        // Redirect to the success page
+                        window.location.href = 'https://papakobina.github.io/testingsub/success.html';
+                    }).catch(function (err) {
+                        console.error('Token error:', err);
+                    });
+                } else {
+                    console.error('Unexpected result:', res);
+                }
+            },
+            function (err) {
+                console.error('Login error:', err);
+            }
+        );
+    </script>
 </body>
 </html>
