@@ -56,42 +56,42 @@
 
         // Initialize Okta Sign-In Widget
         const signIn = new OktaSignIn(config);
-        console.log('Signing in');
+        console.log('Initializing sign-in process');
 
-        // Render the widget
-        signIn.renderEl(
-            { el: '#okta-login-container' },
-            function (res) {
-                if (res.status === 'SUCCESS') {
-                    console.log('Login successful:', res);
-
-                    // Log the session token
-                    console.log('Session token:', res.session.token);
-
-                    // Use getWithRedirect instead of getWithoutPrompt for the token exchange
-                    signIn.authClient.token.getWithRedirect({
-                        responseType: 'code',  // Authorization Code
-                        scopes: ['openid', 'profile', 'email'],
-                        state: 'myState', // Optional: to maintain application state
-                    });
-                } else {
-                    console.error('Unexpected result:', res);
-                }
-            },
-            function (err) {
-                console.error('Login error:', err);
-            }
-        );
-
-        // Handle the redirect back from Okta with the authorization code
+        // Check if we're handling a redirect from Okta
         signIn.authClient.token.parseFromUrl().then(function(tokens) {
-            // Store the tokens or handle them as needed
+            // Handle the tokens after successful redirection
             console.log('Tokens received:', tokens);
 
             // Redirect to the success page or perform other actions
             window.location.href = 'https://papakobina.github.io/testingsub/success.html';
         }).catch(function(err) {
-            console.error('Error parsing tokens from URL:', err);
+            console.log('Not handling a redirect; proceeding with sign-in widget rendering');
+            console.error('Error parsing tokens from URL (if any):', err);
+
+            // Render the sign-in widget
+            signIn.renderEl(
+                { el: '#okta-login-container' },
+                function (res) {
+                    if (res.status === 'SUCCESS') {
+                        console.log('Login successful:', res);
+
+                        // Log the session token
+                        console.log('Session token:', res.session.token);
+
+                        // Redirect to Okta for authorization code using getWithRedirect
+                        signIn.authClient.token.getWithRedirect({
+                            responseType: 'code',  // Authorization Code
+                            scopes: ['openid', 'profile', 'email']
+                        });
+                    } else {
+                        console.error('Unexpected result:', res);
+                    }
+                },
+                function (err) {
+                    console.error('Login error:', err);
+                }
+            );
         });
     </script>
 </body>
