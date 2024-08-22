@@ -14,20 +14,27 @@
         const clientId = new URLSearchParams(window.location.search).get('client_id');
         console.log('Client ID:', clientId);
 
-        // Determine the brand based on the client ID
-        const brandMap = {
-            '0oafh5hg3uSvAvdNe1d7': 'brand1',
-            '0oagpx3dhqpSBY8qO1d7': 'brand1'
+        // Map client IDs to their respective brand and redirect URIs
+        const clientMap = {
+            '0oagpx3dhqpSBY8qO1d7': {
+                brand: 'brand1',
+                redirectUri: 'https://papakobina.github.io/testingsub/success-brand1.html'
+            },
         };
-        const brandIdentifier = brandMap[clientId] || 'default';
 
-        console.log('Brand:', brandIdentifier);
+        const clientConfig = clientMap[clientId] || {
+            brand: 'default',
+            redirectUri: 'https://papakobina.github.io/testingsub/succes.html'
+        };
+
+        console.log('Brand:', clientConfig.brand);
+        console.log('Redirect URI:', clientConfig.redirectUri);
 
         // Okta configuration with PKCE
         const config = {
             baseUrl: 'https://dev-duuo.oktapreview.com',
             clientId: clientId,
-            redirectUri: `https://papakobina.github.io/testingsub/succes.html?client_id=${clientId}`, // Pass the client_id as a query parameter
+            redirectUri: clientConfig.redirectUri,  // Dynamic redirect URI based on client ID
             authParams: {
                 issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
                 responseType: ['code'],
@@ -40,7 +47,7 @@
             },
             i18n: {
                 en: {
-                    'primaryauth.title': `Sign in to ${brandIdentifier.toUpperCase()}`
+                    'primaryauth.title': `Sign in to ${clientConfig.brand.toUpperCase()}`
                 }
             },
             logo: 'https://via.placeholder.com/150',
@@ -48,11 +55,11 @@
                 brand: '#000000'
             },
             transformUsername: (username, operation) => {
-                const modifiedUsername = `${brandIdentifier}_${username}`;
+                const modifiedUsername = `${clientConfig.brand}_${username}`;
                 console.log('Transforming username:', modifiedUsername);
                 return modifiedUsername;
             }
-        };        
+        };
 
         // Initialize Okta Sign-In Widget
         const signIn = new OktaSignIn(config);
