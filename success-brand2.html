@@ -11,8 +11,8 @@
         // Initialize Okta Auth SDK
         const authClient = new OktaAuth({
             issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
-            clientId: '0oagpx3dhqpSBY8qO1d7', // Make sure this matches the client ID used in the login page
-            redirectUri: 'https://papakobina.github.io/testingsub/success-brand1.html'
+            clientId: '0oagqn7wr6qvC3I1q1d7', // Make sure this matches the client ID used in the login page
+            redirectUri: 'https://papakobina.github.io/testingsub/success-brand2.html'
         });
 
         // Handle the redirect and exchange the code for tokens
@@ -22,7 +22,7 @@
                 console.log('Access Token:', res.tokens.accessToken);
                 
                 // Redirect to the final destination (Ford website)
-                window.location.href = 'https://www.ford.com/';
+                window.location.href = 'https://www.lincoln.com/';
             } else {
                 console.error('No access token received');
             }
