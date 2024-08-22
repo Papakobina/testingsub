@@ -14,26 +14,57 @@
         const clientId = new URLSearchParams(window.location.search).get('client_id');
         console.log('Client ID:', clientId);
 
+        // Determine the brand based on the client ID
+        const brandMap = {
+            '0oafh5hg3uSvAvdNe1d7': 'brand1',
+            '0oagpx3dhqpSBY8qO1d7': 'brand1'
+        };
+        const brandIdentifier = brandMap[clientId] || 'default';
+
+        console.log('Brand:', brandIdentifier);
+
         // Okta configuration with PKCE
         const config = {
             baseUrl: 'https://dev-duuo.oktapreview.com',
             clientId: clientId,
-            redirectUri: `https://papakobina.github.io/testingsub/succes.html?client_id=${clientId}`,
+            redirectUri: `https://papakobina.github.io/testingsub/succes.html?client_id=${clientId}`, // Pass the client_id as a query parameter
             authParams: {
                 issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
                 responseType: ['code'],
+                display: 'page',
+                scopes: ['openid', 'profile', 'email'],
                 pkce: true
+            },
+            features: {
+                registration: true
+            },
+            i18n: {
+                en: {
+                    'primaryauth.title': `Sign in to ${brandIdentifier.toUpperCase()}`
+                }
+            },
+            logo: 'https://via.placeholder.com/150',
+            colors: {
+                brand: '#000000'
+            },
+            transformUsername: (username, operation) => {
+                const modifiedUsername = `${brandIdentifier}_${username}`;
+                console.log('Transforming username:', modifiedUsername);
+                return modifiedUsername;
             }
         };
+        
 
         // Initialize Okta Sign-In Widget
         const signIn = new OktaSignIn(config);
+        console.log('Initializing sign-in process');
 
         // Render the sign-in widget
         signIn.renderEl(
             { el: '#okta-login-container' },
             function (res) {
                 if (res.status === 'SUCCESS') {
+                    console.log('Login successful:', res);
                     signIn.authClient.token.getWithRedirect({
                         responseType: 'code',
                         scopes: ['openid', 'profile', 'email']
