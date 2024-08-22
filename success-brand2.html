@@ -21,16 +21,15 @@
                 // Store or handle tokens as needed
                 console.log('Access Token:', res.tokens.accessToken);
                 
-                // Redirect to the final destination (Ford website)
-                window.location.href = 'https://www.lincoln.com/';
+                // Clear the Okta session
+                authClient.signOut().then(function() {
+                    console.log('Session cleared.');
 
-                setTimeout(function() {
-                    authClient.signOut().then(function() {
-                        console.log('Session cleared.');
-                    }).catch(function(err) {
-                        console.error('Error during sign out:', err);
-                    });
-                }, 2000);
+                    // After session is cleared, redirect to the Lincoln website
+                    window.location.href = 'https://www.lincoln.com/';
+                }).catch(function(err) {
+                    console.error('Error during sign out:', err);
+                });
             } else {
                 console.error('No access token received');
             }
