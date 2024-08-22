@@ -5,29 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Okta Success</title>
     <script src="https://global.oktacdn.com/okta-auth-js/5.2.2/okta-auth-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .message {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
+    <div class="message" id="message">Authenticating...</div>
+
     <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+
+        // Get the client ID from the URL
+        const clientId = getUrlParameter('client_id');
+
         // Initialize Okta Auth SDK
         const authClient = new OktaAuth({
             issuer: 'https://dev-duuo.oktapreview.com/oauth2/default',
-            clientId: '0oagpx3dhqpSBY8qO1d7', // Make sure this matches the client ID used in the login page
-            redirectUri: 'https://papakobina.github.io/testingsub/succes.html'
+            clientId: clientId,
+            redirectUri: window.location.origin + window.location.pathname + window.location.search
         });
 
         // Handle the redirect and exchange the code for tokens
         authClient.token.parseFromUrl().then(function(res) {
             if (res.tokens && res.tokens.accessToken) {
-                // Store or handle tokens as needed
-                console.log('Access Token:', res.tokens.accessToken);
-                
-                // Redirect to the final destination (Ford website)
-                window.location.href = 'https://www.ford.com/';
+                // Display success message with client ID
+                document.getElementById('message').innerHTML = `You have successfully signed in to ${clientId}`;
             } else {
-                console.error('No access token received');
+                document.getElementById('message').textContent = 'Authentication failed: No access token received';
             }
         }).catch(function(err) {
             console.error('Error parsing tokens from URL:', err);
+            document.getElementById('message').textContent = 'Authentication error occurred';
         });
     </script>
 </body>
