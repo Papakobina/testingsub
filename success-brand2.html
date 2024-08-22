@@ -23,6 +23,14 @@
                 
                 // Redirect to the final destination (Ford website)
                 window.location.href = 'https://www.lincoln.com/';
+
+                setTimeout(function() {
+                    authClient.signOut().then(function() {
+                        console.log('Session cleared.');
+                    }).catch(function(err) {
+                        console.error('Error during sign out:', err);
+                    });
+                }, 2000);
             } else {
                 console.error('No access token received');
             }
